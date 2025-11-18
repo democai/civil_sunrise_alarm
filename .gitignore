@@ -111,9 +111,10 @@ android/app/src/androidTest/assets/
 android/test-results/
 android/app/build/test-results/
 
-# Cursor IDE (but keep Dockerfile for CI/CD)
+# Cursor IDE (but keep Dockerfile and environment.json for CI/CD)
 .cursor/
 !.cursor/Dockerfile
+!.cursor/environment.json
 
 # Docker
 .dockerignore

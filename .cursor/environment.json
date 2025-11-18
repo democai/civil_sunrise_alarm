@@ -1,0 +1,31 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "install": "just setup",
+  "start": "just server-dev",
+  "terminals": [
+    {
+      "name": "Android Development",
+      "command": "just android-build"
+    },
+    {
+      "name": "Server Development",
+      "command": "just server-dev"
+    },
+    {
+      "name": "Testing",
+      "command": "just test-all"
+    },
+    {
+      "name": "General Terminal",
+      "command": "bash"
+    }
+  ],
+  "ports": [
+    {
+      "name": "Server development port",
+      "port": 8080
+    }
+  ]
+}
