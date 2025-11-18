@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Initializes the periodic alarm check worker on app startup.
+ * This initializer is called after the Application class has initialized WorkManager.
  */
 class WorkManagerInitializer : Initializer<Unit> {
     override fun create(context: Context) {

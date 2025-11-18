@@ -65,14 +65,7 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="com.democ.civilsunrisealarm.platform.worker.WorkManagerInitializer"
-                android:value="androidx.startup" />
-        </provider>
+            tools:node="merge" />
     </application>
 
 </manifest>

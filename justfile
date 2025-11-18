@@ -91,15 +91,18 @@ deps-update:
 # 📱 Android Specific
 android-emulator:
     @echo "📱 Starting Android emulator..."
-    emulator -avd Pixel_7_API_34 || echo "❌ No emulator found. Create one in Android Studio."
+    emulator -avd Pixel_7_API_35 || echo "❌ No emulator found. Create one in Android Studio."
 
 android-device:
     @echo "📱 Listing connected devices..."
     adb devices
+android-push:
+    #!/usr/bin/env bash
+    adb install android/app/build/outputs/apk/debug/app-debug.apk
 
 android-logcat:
     @echo "📋 Showing Android logs..."
-    adb logcat | grep -E "(myapp|SyncService|SyncWorker)"
+    adb logcat | grep -E "(CivilSunriseAlarm|SyncService|SyncWorker)"
 
 
 # 🚀 Release Management

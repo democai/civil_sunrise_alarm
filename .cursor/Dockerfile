@@ -7,7 +7,7 @@ FROM eclipse-temurin:17-jdk-jammy AS base
 ENV ANDROID_HOME=/opt/android-sdk \
     ANDROID_SDK_ROOT=/opt/android-sdk \
     JAVA_HOME=/opt/java/openjdk \
-    PATH=${PATH}:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/build-tools/34.0.0
+    PATH=${PATH}:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/build-tools/35.0.0
 
 # Install required packages and Android SDK tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -36,8 +36,8 @@ RUN cd ${ANDROID_SDK_ROOT}/cmdline-tools && \
 
 # Install Android SDK packages
 RUN yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
-    "platforms;android-34" \
-    "build-tools;34.0.0" \
+    "platforms;android-35" \
+    "build-tools;35.0.0" \
     "platform-tools" 2>&1 | grep -v "Warning: " || true
 
 # Build stage - compile the Android app
