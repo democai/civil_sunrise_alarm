@@ -48,11 +48,11 @@ WORKDIR /workspace
 # Copy project files
 COPY . .
 
-# Build the release APK
+# Build the debug APK (release APK requires a keystore, which would be provided via CI/CD secrets)
 # Override the org.gradle.java.home property that's hardcoded for local development
 RUN cd android && \
     chmod +x gradlew && \
-    ./gradlew clean assembleRelease \
+    ./gradlew clean assembleDebug \
     --no-daemon \
     --gradle-user-home /workspace/.gradle \
     -Dorg.gradle.java.home=$(which java | xargs dirname | xargs dirname)
@@ -62,12 +62,20 @@ FROM base
 
 WORKDIR /workspace
 
-# Copy only the build artifacts from builder
+# Copy only the build artifacts from builder (APK and other outputs)
 COPY --from=builder /workspace/android/app/build/outputs /build/outputs
+
+# Verify APK was built
+RUN if [ -f /build/outputs/apk/debug/app-debug.apk ]; then \
+      echo "✅ Debug APK built successfully!" && \
+      ls -lh /build/outputs/apk/debug/app-debug.apk; \
+    else \
+      echo "❌ APK not found!" && exit 1; \
+    fi
 
 # Label for identification
 LABEL org.opencontainers.image.title="Civil Sunrise Alarm Android CI" \
-      org.opencontainers.image.description="CI build environment for Civil Sunrise Alarm Android app" \
+      org.opencontainers.image.description="CI build environment for Civil Sunrise Alarm Android app - Debug build" \
       org.opencontainers.image.version="1.0"
 
 # Default command
