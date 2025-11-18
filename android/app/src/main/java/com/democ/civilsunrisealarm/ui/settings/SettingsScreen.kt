@@ -130,11 +130,11 @@ fun SettingsScreen(
 
         // Debounced save effect
         LaunchedEffect(offsetText) {
-            val newValue = offsetText.toIntOrNull()
-            if (newValue != null && newValue != lastSavedOffset) {
+            val newValue = offsetText.toIntOrNull() ?: 0 // Treat empty as 0
+            if (newValue != lastSavedOffset && offsetText.isNotEmpty()) {
                 isSavingOffset = true
                 delay(500) // Debounce for 500ms
-                if (offsetText.toIntOrNull() == newValue) { // Check value hasn't changed during delay
+                if ((offsetText.toIntOrNull() ?: 0) == newValue) { // Check value hasn't changed during delay
                     viewModel.updateOffsetMinutes(newValue)
                     lastSavedOffset = newValue
                 }
