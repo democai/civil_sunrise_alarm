@@ -7,10 +7,13 @@ import com.democ.civilsunrisealarm.data.repository.LocationRepository
 import com.democ.civilsunrisealarm.data.repository.SettingsRepository
 import com.democ.civilsunrisealarm.domain.model.AlarmState
 import com.democ.civilsunrisealarm.domain.model.UserSettings
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
+import androidx.core.content.ContextCompat
 import com.democ.civilsunrisealarm.platform.alarm.AlarmManagerWrapper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.democ.civilsunrisealarm.platform.alarm.AlarmSchedulingService
@@ -62,7 +65,8 @@ class SettingsViewModel @Inject constructor(
                     locationState = location,
                     hasLocationPermission = locationProvider.hasLocationPermission(),
                     skipNextAlarmAppliedForDate = alarmState.skipNextAlarmAppliedForDate,
-                    canScheduleExactAlarms = alarmManagerWrapper.canScheduleExactAlarms()
+                    canScheduleExactAlarms = alarmManagerWrapper.canScheduleExactAlarms(),
+                    canUseFullScreenIntent = canUseFullScreenIntent()
                 )
             }.collect { state ->
                 _uiState.value = state
@@ -161,6 +165,26 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
+
+    fun canUseFullScreenIntent(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
+            notificationManager?.canUseFullScreenIntent() ?: true
+        } else {
+            true // Not required on older versions
+        }
+    }
+
+    fun requestFullScreenIntentPermission(): Intent {
+        // Use ACTION_APP_NOTIFICATION_SETTINGS for better Samsung compatibility.
+        // Samsung devices have a per-app toggle at:
+        // Settings → Apps → Your App → Notifications → Full-screen notifications
+        // This intent deep-links directly to the app's notification settings where
+        // the user can enable full-screen notifications.
+        return Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        }
+    }
 }
 
 data class SettingsUiState(
@@ -173,6 +197,7 @@ data class SettingsUiState(
     val isLoadingLocation: Boolean = false,
     val locationFetchError: Boolean = false,
     val skipNextAlarmAppliedForDate: java.time.LocalDate? = null,
-    val canScheduleExactAlarms: Boolean = true
+    val canScheduleExactAlarms: Boolean = true,
+    val canUseFullScreenIntent: Boolean = true
 )
 

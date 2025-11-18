@@ -1,5 +1,6 @@
 package com.democ.civilsunrisealarm.ui.alarm
 
+import android.app.NotificationManager
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
@@ -9,6 +10,7 @@ import android.os.PowerManager
 import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -55,7 +57,13 @@ class AlarmActivity : ComponentActivity() {
             alarmTriggerHandler.onAlarmTriggered()
         }
 
-        // Wake up screen and keep it on
+        // API 27+ lock screen flags (required for Android 14/15 full-screen intent pattern)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        }
+
+        // Wake up screen and keep it on (legacy support for older APIs)
         @Suppress("DEPRECATION")
         window.addFlags(
             WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
@@ -131,8 +139,10 @@ class AlarmActivity : ComponentActivity() {
                 ringtone?.streamType = AudioManager.STREAM_ALARM
             }
             
-            // Enable looping
-            ringtone?.isLooping = true
+            // Enable looping (API 28+)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                ringtone?.isLooping = true
+            }
             
             // Play the ringtone
             ringtone?.play()
@@ -144,6 +154,7 @@ class AlarmActivity : ComponentActivity() {
 
     private fun dismissAlarm() {
         ringtone?.stop()
+        cancelAlarmNotification()
         releaseWakeLock()
         // Alarm trigger was already handled in onCreate if this was from AlarmReceiver
         finish()
@@ -151,6 +162,7 @@ class AlarmActivity : ComponentActivity() {
 
     private fun snoozeAlarm() {
         ringtone?.stop()
+        cancelAlarmNotification()
         // Snooze for 5 minutes
         val snoozeTimeMillis = System.currentTimeMillis() + (5 * 60 * 1000L)
         // Schedule a temporary alarm for snooze
@@ -163,6 +175,17 @@ class AlarmActivity : ComponentActivity() {
         }
         releaseWakeLock()
         finish()
+    }
+    
+    private fun cancelAlarmNotification() {
+        try {
+            val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java)
+            // Cancel the notification posted by AlarmReceiver (NOTIFICATION_ID = 1001)
+            notificationManager?.cancel(1001)
+            Log.d("AlarmActivity", "✅ Alarm notification cancelled")
+        } catch (e: Exception) {
+            Log.e("AlarmActivity", "Error cancelling alarm notification", e)
+        }
     }
 
     private fun releaseWakeLock() {
@@ -179,6 +202,7 @@ class AlarmActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ringtone?.stop()
+        cancelAlarmNotification()
         releaseWakeLock()
     }
 }

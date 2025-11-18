@@ -2,6 +2,7 @@ package com.democ.civilsunrisealarm.ui.settings
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -288,6 +289,30 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.grant_exact_alarm_permission))
+            }
+        }
+
+        // Full-screen intent permission (Android 14+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !uiState.canUseFullScreenIntent) {
+            Divider()
+            Text(
+                text = "Full-Screen Alarm Permission Required",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+            Text(
+                text = "Alarms must be allowed to show over the lock screen. On Samsung devices, enable \"Full-screen notifications\" in the notification settings.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Button(
+                onClick = {
+                    val intent = viewModel.requestFullScreenIntentPermission()
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Open Notification Settings")
             }
         }
 
