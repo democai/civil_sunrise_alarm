@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sunrise_sky_top">#1F2A44</color>
+    <color name="sunrise_sky_mid">#FF7E5F</color>
+    <color name="sunrise_sky_bottom">#FFD194</color>
+    <color name="sunrise_sun">#FFE676</color>
+    <color name="sunrise_sun_glow">#FFB347</color>
+    <color name="sunrise_wave">#F9A26C</color>
+    <color name="sunrise_sand">#FFF5E1</color>
+    <color name="sunrise_highlight">#FFD7A3</color>
+    <color name="sunrise_ray">#FFEAA7</color>
+</resources>
+

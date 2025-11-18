@@ -1,0 +1,75 @@
+name: Android Build (Dev)
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  actions: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    environment: Dev
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/myapp-android-ci:latest
+      options: --user 0:0
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ~/.gradle/daemon
+          ~/.gradle/native
+          ~/.gradle/jdks
+          android/.gradle
+        key: ${{ runner.os }}-gradle-${{ hashFiles('android/build.gradle.kts', 'android/app/build.gradle.kts', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+
+    - name: Clean Android build
+      run: just android-clean
+
+    - name: Build Release APK (signed with debug keystore)
+      working-directory: android
+      run: ./gradlew assembleRelease
+
+    - name: List APK files (debug)
+      run: |
+        echo "🔍 Checking for APK files..."
+        echo "Current working directory: $(pwd)"
+        echo "Contents of root directory:"
+        ls -la
+        echo "Contents of android directory:"
+        ls -la android/ || echo "❌ android directory not found"
+        echo "Contents of android/app/build/outputs/apk:"
+        ls -la android/app/build/outputs/apk/ || echo "❌ apk directory not found"
+        find android/app/build/outputs/apk -name "*.apk" -type f || echo "❌ No APK files found"
+        echo "Checking if APK exists:"
+        ls -la android/app/build/outputs/apk/release/app-release.apk || echo "❌ app-release.apk not found"
+        echo "File size if APK exists:"
+        du -h android/app/build/outputs/apk/release/app-release.apk 2>/dev/null || echo "❌ Cannot get file size"
+
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-apk
+        path: android/app/build/outputs/apk/release/app-release.apk
+        if-no-files-found: error
+
+    - name: Upload Gradle problems report
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: gradle-problems
+        path: android/build/reports/problems/

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/sunrise_sand"
+        android:pathData="M14,78h80v18H14z" />
+    <path
+        android:fillColor="@color/sunrise_wave"
+        android:pathData="M18,72c6,4 12,4 18,0s12,-4 18,0s12,4 18,0s12,-4 18,0v12H18Z" />
+    <path
+        android:pathData="M18,68h72"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_highlight"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:fillColor="@color/sunrise_sun"
+        android:pathData="M54,28A26,26 0 0,1 80,54H28A26,26 0 0,1 54,28Z" />
+    <path
+        android:fillColor="@color/sunrise_sun_glow"
+        android:fillAlpha="0.45"
+        android:pathData="M54,34A20,20 0 0,1 74,54H34A20,20 0 0,1 54,34Z" />
+    <path
+        android:pathData="M54,16V4"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M40,20L30,10"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M68,20L78,10"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M30,44H18"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M78,44H90"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M40,32L30,28"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+    <path
+        android:pathData="M68,32L78,28"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeColor="@color/sunrise_ray"
+        android:fillColor="@android:color/transparent" />
+</vector>
+
