@@ -41,6 +41,7 @@ class AlarmActivity : ComponentActivity() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var ringtone: android.media.Ringtone? = null
     private var isSnooze: Boolean = false
+    private var wakeLockReleased: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,7 +144,7 @@ class AlarmActivity : ComponentActivity() {
 
     private fun dismissAlarm() {
         ringtone?.stop()
-        wakeLock?.release()
+        releaseWakeLock()
         // Alarm trigger was already handled in onCreate if this was from AlarmReceiver
         finish()
     }
@@ -160,14 +161,25 @@ class AlarmActivity : ComponentActivity() {
             Log.e("AlarmActivity", "Failed to schedule snooze alarm", e)
             // Continue to dismiss even if snooze scheduling fails
         }
-        wakeLock?.release()
+        releaseWakeLock()
         finish()
+    }
+
+    private fun releaseWakeLock() {
+        if (!wakeLockReleased && wakeLock?.isHeld == true) {
+            try {
+                wakeLock?.release()
+                wakeLockReleased = true
+            } catch (e: Exception) {
+                Log.e("AlarmActivity", "Error releasing WakeLock", e)
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ringtone?.stop()
-        wakeLock?.release()
+        releaseWakeLock()
     }
 }
 

@@ -2,6 +2,7 @@ package com.democ.civilsunrisealarm
 
 import android.app.Application
 import android.util.Log
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -10,13 +11,18 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.democ.civilsunrisealarm.platform.worker.AlarmCheckWorker
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
 class CivilSunriseAlarmApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var hiltWorkerFactory: HiltWorkerFactory
+
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setMinimumLoggingLevel(Log.INFO)
+            .setWorkerFactory(hiltWorkerFactory)
             .build()
 
     override fun onCreate() {
