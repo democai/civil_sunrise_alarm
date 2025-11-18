@@ -49,9 +49,13 @@ WORKDIR /workspace
 COPY . .
 
 # Build the release APK
+# Override the org.gradle.java.home property that's hardcoded for local development
 RUN cd android && \
     chmod +x gradlew && \
-    ./gradlew clean assembleRelease --no-daemon --gradle-user-home /workspace/.gradle
+    ./gradlew clean assembleRelease \
+    --no-daemon \
+    --gradle-user-home /workspace/.gradle \
+    -Dorg.gradle.java.home=$(which java | xargs dirname | xargs dirname)
 
 # Final stage - output image
 FROM base
